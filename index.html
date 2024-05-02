@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>tela</title>
+    <script>
+    async function getaddressbycep() {
+        const cep = document.getElementById('cep').value;
+        try {
+            const response = await fetch (`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+            console.log(data);
+            document.getElementById('nome').innerText = data.logradouro;
+            document.getElementById('bairro').innerText = data.bairro;
+            document.getElementById('cidade').innerText = data.localidade;
+        } catch (error) {
+            alert(error.message);
+        }
+}
+
+async function previsao() {
+    const lat = document.getElementById('lat').value;
+    const long = document.getElementById('tristeza2').value;
+    try {
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m`);
+        const data = await response.json();
+        console.log(data);
+        const horaAtual = new Date().getHours();
+        let temperaturaAtual = '';
+        for (let index = 0; index < data.hourly.temperature_2m.length; index++) {
+            if (new Date(data.hourly.time[index]).getHours() === horaAtual) {
+                temperaturaAtual = data.hourly.temperature_2m[index];
+                break;
+            }
+        }
+        document.getElementById('previ').innerText = `Previsão de tempo de acordo com a região: ${temperaturaAtual}°C`;
+    } catch (error) {
+        alert(error.message);
+    }
+}
+    </script>
+
+</head>
+<body>
+    <header>
+    <div id="conteiner">
+        <div id="dnc"> <h1>DncWeather</h1> </div>
+        <div id="links">
+            <a href="#pesquisa">Endereços</a>
+            <a href="#resultado-previsao">Previsão do tempo</a>
+        </div>
+    </div>
+</header>
+<main>
+    <div id="geral">
+        <div id="texto">
+            <p>Descubra Mais com Precisão: <br>
+             Previsões do Tempo e endereços <br>  em tempo real.</p>
+        </div>
+
+        <img id="nuvem" src="imagem/nuvem.svg" alt="">
+    </div>
+
+    <div id="info">
+    <div class="quadrado" >
+        <p id="tristeza">Primeiro nome </p>
+        <form action="">
+        <input class="inputs" type="text" placeholder="Insira seu Primeiro nome"> <br>
+        <p>Email</p>
+        <input  class="inputs" type="email" placeholder="Insira seu email" > <br>
+        <p> Cep </p>
+        <input id="cep" class="inputs" type="number" placeholder=" Insira o CEP"> <br>
+        <p>Digite a Latidute e longitude para saber a Previsão</p>
+        <input class="inputs2" id="lat" type="number" placeholder="Latitude"> 
+        <input class="inputs2" id="tristeza2" type="number" placeholder="Longitude"> <br> </form>
+        <button onclick="getaddressbycep(); previsao()"> Acessar </button>
+    </div>
+    </div>
+
+ <div>
+    <div class="busca">
+        <div><p>Resultado da busca por CEP:</p></div>
+        <div><img class="resultado" src="imagem/cep.svg" alt=""></div>
+    </div>
+    <div id="pesquisa">
+        <div class="mapa"><p>Logradouro/nome</p></div>
+        <div class="mapa"><p>Bairro/Distrito</p></div>
+        <div class="mapa"><p>Localidade/UF</p></div>
+    </div>
+    <div id="resultado-pesquisa">
+        <div id="nome" class="Rmapa"></div>
+        <div id="bairro" class="Rmapa"></div>
+        <div id="cidade" class="Rmapa"></div>
+    </div>
+
+    <div class="busca">
+       <div> <p>Conteúdo da previsão:</p> </div>
+       <img id="mininuvem" src="imagem/mininuem.svg" alt="" style="margin: 10px;">
+    </div>
+
+    <div id="resultado-previsao">
+        <p id="previ"> </p> 
+    </div>
+</main>
+
+<footer>
+    <div> <p>Termos de Uso | Política de Privacidade </p></div>
+</footer>
+<script></script>
+</body>
+</html>
